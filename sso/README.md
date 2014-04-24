@@ -4,13 +4,25 @@ A Clojure bare-bones implementation of SSO with SPiD.
 
 ## Usage
 
-Start by installing spid-sdk-clojure. It is unfortunately not on
-Clojars, because the SPiD Java SDK isn't in a central nexus.
+1. **Download and install the Clojure SDK**
 
-https://github.com/kodemaker/spid-sdk-clojure
+   Start by installing spid-sdk-clojure. It is unfortunately not on
+   Clojars, because the SPiD Java SDK isn't in a central nexus.
 
-Then fix the configuration by copying `config/config.edn.sample` to
-`config/config.edn` - replacing `:client-id` and `:client-secret` with
-your own credentials.
+   https://github.com/kodemaker/spid-sdk-clojure
 
-Then you can start the server with `lein ring server-headless`.
+2. **Fill in the configuration**
+
+   ```sh
+   cd sso/config
+   cp config.edn.sample config.edn
+   vim config.edn
+   ```
+
+   Replace `:client-id` and `:client-secret` with your own credentials.
+
+3. **Start the server**
+
+   ```sh
+   lein ring server-headless
+   ```
