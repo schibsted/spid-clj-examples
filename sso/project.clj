@@ -6,6 +6,7 @@
                  [compojure "1.1.3"]
                  [clj-http "0.7.9"]
                  [cheshire "5.3.1"]]
-  :ring {:handler spid-clojure-sso-example.core/app}
+  :ring {:handler spid-clojure-sso-example.core/app
+         :port 3013}
   :profiles {:dev {:plugins [[lein-ring "0.8.7"]]
                    :resource-paths ["config"]}})
