@@ -32,19 +32,20 @@
      (str "<a href='" authorize-url "'>Log in with SPiD</a>"))})
 
 ;;; Create user client
-(defn create-user-client [code]
-  (sdk/create-user-client code client-id client-secret
-                          {:spid-base-url spid-base-url
-                           :redirect-uri create-session-url}))
+(defn create-client []
+  (sdk/create-client client-id client-secret
+                     {:spid-base-url spid-base-url
+                      :redirect-uri create-session-url}))
 ;;;
 
 ;;; Fetch user information and add to session
 (defn create-session [code]
-  (let [client (create-user-client code)
-        user (:data (sdk/GET client "/me"))]
+  (let [client (create-client)
+        token (sdk/create-user-token client code)
+        user (:data (sdk/GET client token "/me"))]
     {:status 302
      :headers {"Location" "/"}
-     :session {:client client
+     :session {:token token
                :user user}}))
 ;;;
 
@@ -52,8 +53,7 @@
 (defn get-logout-url [request]
   (str spid-base-url "/logout"
        "?redirect_uri=" our-base-url
-       "&oauth_token=" (-> request :session :client
-                           .getOauthCredentials .getAccessToken)))
+       "&oauth_token=" (-> request :session :token)))
 
 (defn log-user-out [request]
   {:status 302
