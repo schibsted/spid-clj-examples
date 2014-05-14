@@ -4,7 +4,7 @@
             [compojure.core :refer [defroutes GET]]
             [ring.middleware.params]
             [ring.middleware.session]
-            [spid-sdk-clojure.core :as sdk]))
+            [spid-client-clojure.core :as spid]))
 
 (defonce config (read-string (slurp (clojure.java.io/resource "config.edn"))))
 
@@ -33,7 +33,7 @@
 
 ;;; Create user client
 (defn create-client []
-  (sdk/create-client client-id client-secret
+  (spid/create-client client-id client-secret
                      {:spid-base-url spid-base-url
                       :redirect-uri create-session-url}))
 ;;;
@@ -41,8 +41,8 @@
 ;;; Fetch user information and add to session
 (defn create-session [code]
   (let [client (create-client)
-        token (sdk/create-user-token client code)
-        user (:data (sdk/GET client token "/me"))]
+        token (spid/create-user-token client code)
+        user (:data (spid/GET client token "/me"))]
     {:status 302
      :headers {"Location" "/"}
      :session {:token token
