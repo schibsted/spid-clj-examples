@@ -50,7 +50,7 @@
 (defn get-order [order-id]
   (:data (spid/GET client token (str "/order/" order-id "/status"))))
 
-(defn render-page [body]
+(defn serve-page [body]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body body})
@@ -60,14 +60,14 @@
    :headers {"Location" url}})
 
 (defn get-index []
-  (render-page (slurp (io/resource "index.html"))))
+  (serve-page (slurp (io/resource "index.html"))))
 
 (defn checkout [request]
   (redirect-to (-> request :params create-paylink :shortUrl)))
 
 (defn success [order-id]
   (let [order (get-order order-id)]
-    (render-page
+    (serve-page
      (str "<h1>Success!</h1>"
           "<p>"
           (:clientReference order)
@@ -76,7 +76,7 @@
           "</p>"))))
 
 (defn cancel [cancel-page]
-  (render-page
+  (serve-page
    (str "<h1>Cancelled</h1>"
         "<p>You left at "
         "<strong>" cancel-page "</strong>."
