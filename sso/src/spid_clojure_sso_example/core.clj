@@ -34,8 +34,8 @@
 ;;; Create user client
 (defn create-client []
   (spid/create-client client-id client-secret
-                     {:spid-base-url spid-base-url
-                      :redirect-uri create-session-url}))
+                      {:spid-base-url spid-base-url
+                       :redirect-uri create-session-url}))
 ;;;
 
 ;;; Fetch user information and add to session
