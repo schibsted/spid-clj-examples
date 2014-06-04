@@ -7,7 +7,16 @@
             [spid-client-clojure.core :as spid]))
 
 (defonce config (read-string (slurp (clojure.java.io/resource "config.edn"))))
-(defonce client (spid/create-client (:client-id config) (:client-secret config)))
+
+(defonce client-id (:client-id config))
+(defonce client-secret (:client-secret config))
+(defonce spid-base-url (:spid-base-url config))
+(defonce our-base-url (:our-base-url config))
+
+(defonce client (spid/create-client client-id
+                                    client-secret
+                                    {:spid-base-url spid-base-url}))
+
 (defonce token (spid/create-server-token client))
 
 (def products {"sw4" {:description "Star Wars IV" :price 9900 :vat 2400}
@@ -30,8 +39,8 @@
 
 (defn create-paylink-data [products]
   {:title "Quality movies"
-   :redirectUri "http://localhost:3014/success"
-   :cancelUri "http://localhost:3014/cancel"
+   :redirectUri (str our-base-url "/success")
+   :cancelUri (str our-base-url "/cancel")
    :clientReference (str "Order number " (rand-int 100000))
    :items (json/write-str (keep prepare-paylink-item products))})
 
