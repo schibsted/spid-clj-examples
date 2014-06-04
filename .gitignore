@@ -1,3 +1,4 @@
 .nrepl-port
 target
 /sso/config/config.edn
+/paylinks/config/config.edn
