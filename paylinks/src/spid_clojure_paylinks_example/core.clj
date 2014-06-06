@@ -21,6 +21,7 @@
 (defonce token (spid/create-server-token client))
 ;;;
 
+;;; Order status codes
 (def order-status {"-3" "Expired"
                    "-2" "Cancelled"
                    "-1" "Failed"
@@ -29,6 +30,7 @@
                    "2" "Complete"
                    "3" "Credited"
                    "4" "Authorized"})
+;;;
 
 ;;; The entirety of our product catalog right here
 (def products {"sw4" {:description "Star Wars IV" :price 9900 :vat 2400}
@@ -55,9 +57,6 @@
   (:data (spid/POST client token "/paylink" (create-paylink-data products))))
 ;;;
 
-(defn get-order [order-id]
-  (:data (spid/GET client token (str "/order/" order-id "/status"))))
-
 (defn serve-page [body]
   {:status 200
    :headers {"Content-Type" "text/html"}
@@ -73,6 +72,11 @@
 ;;; Create Paylink and redirect to SPiD
 (defn checkout [request]
   (redirect-to (-> request :params create-paylink :shortUrl)))
+;;;
+
+;;; Fetch order info
+(defn get-order [order-id]
+  (:data (spid/GET client token (str "/order/" order-id "/status"))))
 ;;;
 
 (defn success [order-id]
