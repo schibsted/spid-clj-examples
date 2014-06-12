@@ -61,12 +61,23 @@
                                    "32" "Klarna Invoice"})
 ;;;
 
-;;; Create data to POST to /paylink
+;;; Create data to POST to /user/{userId}/charge
 (defn prepare-paylink-item [[product-id quantity]]
   (when (> (Integer/parseInt quantity) 0)
     (assoc (products product-id)
       :quantity quantity)))
 
+(defn create-order-items [products]
+  (json/write-str (keep prepare-paylink-item products)))
+
+(defn create-order-data [user-id products sign-secret]
+  (spid/sign-params
+   {:requestReference (str "Order #" (rand-int 100000))
+    :items (create-order-items products)}
+   sign-secret))
+;;;
+
+;;; Create data to POST to /paylink
 (defn create-paylink-items [products]
   (json/write-str
    (->> products
@@ -79,17 +90,6 @@
    :cancelUri (str our-base-url "/cancel")
    :clientReference (str "Order number " (rand-int 100000))
    :items (create-paylink-items products)})
-;;;
-
-;;; Create data to POST to /user/{userId}/charge
-(defn create-order-items [products]
-  (json/write-str (keep prepare-paylink-item products)))
-
-(defn create-order-data [user-id products sign-secret]
-  (spid/sign-params
-   {:requestReference (str "Order #" (rand-int 100000))
-    :items (create-order-items products)}
-   sign-secret))
 ;;;
 
 (defn create-paylink [products]
