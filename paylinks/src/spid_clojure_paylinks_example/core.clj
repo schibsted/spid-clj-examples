@@ -44,12 +44,16 @@
     (assoc (products product-id)
       :quantity quantity)))
 
+(defn create-paylink-items [products]
+  (json/write-str
+   (keep prepare-paylink-item products)))
+
 (defn create-paylink-data [products]
   {:title "Quality movies"
    :redirectUri (str our-base-url "/success")
    :cancelUri (str our-base-url "/cancel")
    :clientReference (str "Order number " (rand-int 100000))
-   :items (json/write-str (keep prepare-paylink-item products))})
+   :items (create-paylink-items products)})
 ;;;
 
 ;;; Create Paylink

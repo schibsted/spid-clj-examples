@@ -8,10 +8,10 @@
 
 (defonce config (read-string (slurp (clojure.java.io/resource "config.edn"))))
 
-(def client-id (:client-id config))
-(def client-secret (:client-secret config))
-(def spid-base-url (:spid-base-url config))
-(def our-base-url (:our-base-url config))
+(defonce client-id (:client-id config))
+(defonce client-secret (:client-secret config))
+(defonce spid-base-url (:spid-base-url config))
+(defonce our-base-url (:our-base-url config))
 
 ;;; Build login URL
 (def create-session-url (str our-base-url "/create-session"))
