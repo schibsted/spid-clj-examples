@@ -50,7 +50,7 @@
 
 (defn create-paylink-data [products]
   {:title "Quality movies"
-   :redirectUri (str our-base-url "/success")
+   :redirectUri (str our-base-url "/callback")
    :cancelUri (str our-base-url "/cancel")
    :clientReference (str "Order number " (rand-int 100000))
    :items (create-paylink-items products)})
@@ -83,15 +83,32 @@
   (:data (spid/GET client token (str "/order/" order-id "/status"))))
 ;;;
 
-(defn success [order-id]
-  (let [order (get-order order-id)]
+(defn success [order-id request]
+  (let [order (get-order order-id)
+        name (-> request :session :user :displayName)]
     (serve-page
-     (str "<h1>Success!</h1>"
+     (str "<h1>Welcome back, " name "!</h1>"
           "<p>"
           (:clientReference order)
           " is "
           "<strong>" (order-status (:status order)) "</strong> "
           "</p>"))))
+
+(defn create-client []
+  (spid/create-client client-id client-secret
+                      {:spid-base-url spid-base-url
+                       :redirect-uri our-base-url}))
+
+;;; Handle callback from SPiD, make sure we've got the right user
+(defn callback [code order-id]
+  (let [client (create-client)
+        token (spid/create-user-token client code)
+        user (:data (spid/GET client token "/me"))]
+    {:status 302
+     :headers {"Location" (str "/success?order-id=" order-id)}
+     :session {:token token
+               :user user}}))
+;;;
 
 (defn cancel [cancel-page]
   (serve-page
@@ -103,7 +120,8 @@
 (defroutes routes
   (GET "/" request (get-index))
   (POST "/checkout" request (checkout request))
-  (GET "/success" [order_id] (success order_id))
+  (GET "/success" [order-id :as request] (success order-id request))
+  (GET "/callback" [code order_id] (callback code order_id))
   (GET "/cancel" [spid_page] (cancel spid_page)))
 
 (def app
