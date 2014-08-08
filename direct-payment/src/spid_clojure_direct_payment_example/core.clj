@@ -59,7 +59,7 @@
 (defn render-template-resource [file data]
   (render-template (slurp (io/resource file)) data))
 
-;;; Extracting order data for the order summary view
+;;; Preparing order data for the summary
 (defn get-order-view [order]
   {:clientReference (:clientReference order)
    :status (order-status (:status order))
@@ -81,11 +81,13 @@
 ;; If you want to run this sample, insert a known existing user id in the
 ;; subscribers vector below.
 
-(defn -main [& [args]]
-;;; Charge subscribers
-  (let [subscribers [{:user-id 238342}]
-        subscription {:name "Ants Monthly" :price 9900 :vat 2400}]
-    (doseq [user-id (map :user-id subscribers)]
-      (print "User ID" (str user-id ":") (charge-user-for-subscription user-id subscription))))
+;;; Subscription is a map with name, price and vat
+(defonce subscription {:name "Ants Monthly" :price 9900 :vat 2400})
 ;;;
-)
+
+;;; Charging the users, and printing a report
+(defn -main [& [args]]
+  (let [subscribers [{:user-id 238342}]]
+    (doseq [user-id (map :user-id subscribers)]
+      (print "User ID" (str user-id ":") (charge-user-for-subscription user-id subscription)))))
+;;;
