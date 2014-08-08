@@ -1,0 +1,1 @@
+Captured #{currency} #{totalPrice} from #{paymentIdentifier}.
