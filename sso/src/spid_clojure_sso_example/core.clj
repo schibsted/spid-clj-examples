@@ -17,7 +17,7 @@
 (def create-session-url (str our-base-url "/create-session"))
 
 (def authorize-url
-  (str spid-base-url "/oauth/authorize"
+  (str spid-base-url "/flow/auth"
        "?client_id=" client-id
        "&response_type=code"
        "&redirect_uri=" create-session-url))
