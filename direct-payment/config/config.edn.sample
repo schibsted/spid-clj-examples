@@ -1,5 +1,5 @@
 {:client-id "<YOUR CLIENT ID>"
  :client-secret "<YOUR CLIENT SECRET>"
  :client-sign-secret "<YOUR CLIENT SIGN SECRET>"
- :spid-base-url "https://stage.payment.schibsted.no"
+ :spid-base-url "https://identity-pre.schibsted.com"
  :our-base-url "http://localhost:3015"}
