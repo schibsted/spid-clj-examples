@@ -1,4 +1,0 @@
-{:client-id "YOUR CLIENT ID"
- :client-secret "YOUR CLIENT SECRET"
- :client-sign-secret "YOUR CLIENT SIGNING SECRET"
- :spid-base-url "https://identity-pre.schibsted.com"}
